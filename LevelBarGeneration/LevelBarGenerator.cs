@@ -14,8 +14,12 @@ namespace LevelBarGeneration
     /// </summary>
     public class LevelBarGenerator
     {
+        // Constants
+        private static double MinLevelValue = -3.0d;
+        private static double MaxLevelValue = -0.8d;
+
         // Fields
-        private readonly IScheduler scheduler;
+        private IScheduler scheduler;
         private GeneratorState state = GeneratorState.Stopped;
 
         // Constructor
@@ -99,12 +103,32 @@ namespace LevelBarGeneration
         /// <returns>Disconnect Task</returns>
         public async Task Disconnect()
         {
-            await scheduler.DeleteJob(new JobKey("job"));
+            if (state == GeneratorState.Stopped)
+            {
+                Console.WriteLine("Generator is already stopped");
+                return;
+            }
 
+            await scheduler.DeleteJob(new JobKey("job"));
+            await scheduler.Shutdown(waitForJobsToComplete: true);
             DeregisterChannels();
 
             state = GeneratorState.Stopped;
             GeneratorStateChanged?.Invoke(this, new GeneratorStateChangedEventArgs { State = GeneratorState.Stopped });
+        }
+
+        /// <summary>
+        /// Transforms a Level value to a scale that is more appropriate for visualization.
+        /// </summary>
+        public static float TransformValue(float level)
+        {
+            var min = MinLevelValue;
+            var max = MaxLevelValue;
+
+            double newLevel = Math.Log10(level);
+            newLevel = (newLevel - min) / (max - min);
+            newLevel = Math.Max(0, Math.Min(1, newLevel));
+            return (float)newLevel;
         }
 
         /// <summary>
@@ -119,6 +143,8 @@ namespace LevelBarGeneration
 
         private async Task SetupDataGenerator(int channelBlockSize, int samplingRate, double samplingTime, int numberOfChannels)
         {
+            StdSchedulerFactory factory = new StdSchedulerFactory();
+            scheduler = factory.GetScheduler().Result;
             DataThroughputJob.SetupJob(samplingRate, channelBlockSize, samplingTime, numberOfChannels);
 
             await Task.Run(async () =>
@@ -152,7 +178,7 @@ namespace LevelBarGeneration
         private void DeregisterChannels()
         {
             int numberOfChannels = 75;
-            for (int i = 0; i < numberOfChannels; ++i)
+            for (int i = numberOfChannels - 1; i >= 0; --i)
             {
                 ChannelRemoved?.Invoke(this, new ChannelChangedEventArgs { ChannelId = i });
             }

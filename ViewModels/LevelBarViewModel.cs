@@ -5,6 +5,7 @@
 namespace LevelBarApp.ViewModels
 {
     using GalaSoft.MvvmLight;
+    using System;
 
     /// <summary>
     /// Represents a level bar for a channel
@@ -12,13 +13,34 @@ namespace LevelBarApp.ViewModels
     /// <seealso cref="ViewModelBase" />
     public class LevelBarViewModel : ViewModelBase
     {
-        // Fields
-        private string name = string.Empty;
-        private float level = 0.0f;
-        private float maxLevel = 0.0f;
+        #region Private fields
         private int id;
+        private string name;
+        private float level;
+        private float maxLevel;
+        #endregion
 
-        // Properties
+
+        #region Constructor
+        public LevelBarViewModel(int id, string name)
+        {
+            this.id = id;
+            this.name = name;
+        }
+        #endregion
+
+
+        #region Properties
+        /// <summary>
+        /// Represents how long the Peakhold lasts, before it starts to reset back to zero.
+        /// </summary>
+        public TimeSpan PeakholdDuration { get; set; } = TimeSpan.FromSeconds(2);
+
+        /// <summary>
+        /// Represents how fast the Peakhold resets back to zero. 
+        /// For example: If speed=v, this means that it takes 1/v seconds to reset a value of 1 back to 0.
+        /// </summary>
+        public float PeakholdResetSpeed { get; set; } = 1.0f;
 
         /// <summary>
         /// Gets or sets the identifier.
@@ -83,5 +105,8 @@ namespace LevelBarApp.ViewModels
                 RaisePropertyChanged(nameof(MaxLevel));
             }
         }
+
+        public DateTime MaxLevelLastUpdate { get; set; } = DateTime.Now;
+        #endregion
     }
 }

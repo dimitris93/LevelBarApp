@@ -4,10 +4,87 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LevelBarApp"
+        xmlns:viewmodels="clr-namespace:LevelBarApp.ViewModels"
+        xmlns:converters="clr-namespace:LevelBarApp.Converters"
+        xmlns:enum="clr-namespace:LevelBarGeneration;assembly=LevelBarGeneration"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="1500" >
+
+    <Window.Resources>
+        <converters:LevelValueToColorConverter x:Key="LevelValueToColorConverter" />
+        <converters:MaxLevelValueToPeakholdHeightConverter x:Key="MaxLevelValueToPeakholdHeightConverter" />
+    </Window.Resources>
+
     <Grid>
-        <StackPanel Orientation="Vertical">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top menu -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" >
+            <!-- On/Off indicator -->
+            <Ellipse Width="10" Height="10" Margin="5">
+                <Ellipse.Style>
+                    <Style TargetType="Ellipse">
+                        <Setter Property="Fill" Value="Red" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding GeneratorState}" Value="{x:Static enum:GeneratorState.Running}">
+                                <Setter Property="Fill" Value="Green"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding GeneratorState}" Value="{x:Static enum:GeneratorState.Stopped}">
+                                <Setter Property="Fill" Value="Red"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Ellipse.Style>
+            </Ellipse>
+
+            <!-- Connect Button -->
+            <Button Content="Connect" Margin="5" Command="{Binding ConnectGeneratorCommand}" />
+
+            <!-- Disconnect Button -->
+            <Button Content="Disconnect" Margin="5" Command="{Binding DisconnectGeneratorCommand}" />
         </StackPanel>
+
+        <!-- Panel containing LevelBars -->
+        <Viewbox Grid.Row="1" Margin="5">
+            <ItemsControl  ItemsSource="{Binding LevelBars}" >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <!-- LevelBar -->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <!-- Border & Background -->
+                            <Border x:Name="levelBarBorder" Margin="2" Width="10" Height="250" BorderThickness="1" BorderBrush="DarkGray" >
+                                <Grid>
+                                    <!-- ProgressBar -->
+                                    <ProgressBar Orientation="Vertical" Maximum="1.0" Background="LightGray"
+                                                 Value="{Binding Level}" 
+                                                 Foreground="{Binding Level, Converter={StaticResource LevelValueToColorConverter}}" />
+
+                                    <!-- Peakhold -->
+                                    <Border BorderThickness="0,5,0,0" VerticalAlignment="Bottom" 
+                                            BorderBrush="{Binding MaxLevel, Converter={StaticResource LevelValueToColorConverter}}" >
+                                        <Border.Height>
+                                            <MultiBinding Converter="{StaticResource MaxLevelValueToPeakholdHeightConverter}">
+                                                <Binding Path="MaxLevel" />
+                                                <Binding ElementName="levelBarBorder" Path="ActualHeight" />
+                                            </MultiBinding>
+                                        </Border.Height>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Viewbox>
     </Grid>
 </Window>
