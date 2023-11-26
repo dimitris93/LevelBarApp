@@ -22,6 +22,9 @@ namespace LevelBarApp.ViewModels
 
 
         #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LevelBarViewModel"/> class.
+        /// </summary>
         public LevelBarViewModel(int id, string name)
         {
             this.id = id;
@@ -106,6 +109,9 @@ namespace LevelBarApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// The DateTime on which the <see cref="MaxLevel"/> was last updated.
+        /// </summary>
         public DateTime MaxLevelLastUpdate { get; set; } = DateTime.Now;
         #endregion
     }

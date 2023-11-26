@@ -5,10 +5,13 @@ using System.Windows.Data;
 namespace LevelBarApp.Converters
 {
     /// <summary>
-    /// Converts a MaxLevel value to the corresponding Peakhold height
+    /// Converts between the MaxLevel value and Peakhold height.
     /// </summary>
     public class MaxLevelValueToPeakholdHeightConverter : IMultiValueConverter
     {
+        /// <summary>
+        /// Converts a MaxLevel value to the corresponding Peakhold height.
+        /// </summary>
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values.Length == 2 &&
@@ -21,6 +24,9 @@ namespace LevelBarApp.Converters
             return Binding.DoNothing;
         }
 
+        /// <summary>
+        /// Converts a Peakhold height to the corresponding MaxLevel value.
+        /// </summary>
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();

@@ -6,10 +6,13 @@ using System.Windows.Media;
 namespace LevelBarApp.Converters
 {
     /// <summary>
-    /// Converts a LevelBar value to a color (in the Green->Yellow->Red range spectrum).
+    /// Converts between a LevelBar value and a color (in the Green->Yellow->Red range spectrum).
     /// </summary>
     public class LevelValueToColorConverter : IValueConverter
     {
+        /// <summary>
+        /// Convert LevelBar value to color.
+        /// </summary>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is float level)
@@ -24,6 +27,9 @@ namespace LevelBarApp.Converters
             return Binding.DoNothing;
         }
 
+        /// <summary>
+        /// Convert color to LevelBar value.
+        /// </summary>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

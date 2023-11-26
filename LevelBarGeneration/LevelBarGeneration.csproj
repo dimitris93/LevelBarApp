@@ -9,9 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LevelBarGeneration</RootNamespace>
     <AssemblyName>LevelBarGeneration</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\LevelBarGeneration.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -52,11 +56,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChannelChangedEventArgs.cs" />
-    <Compile Include="ChannelDataEventArgs.cs" />
-    <Compile Include="DataThroughputJob.cs" />
-    <Compile Include="GeneratorState.cs" />
-    <Compile Include="GeneratorStateChangedEventArgs.cs" />
+    <Compile Include="Args\ChannelChangedEventArgs.cs" />
+    <Compile Include="Args\ChannelDataEventArgs.cs" />
+    <Compile Include="Args\LevelBarGeneratorArgs.cs" />
+    <Compile Include="Enums\GeneratorState.cs" />
+    <Compile Include="Args\GeneratorStateChangedEventArgs.cs" />
     <Compile Include="LevelBarGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

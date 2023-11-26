@@ -19,8 +19,6 @@ namespace LevelBarApp.ViewModels
     {
         #region Fields
         private readonly LevelBarGenerator levelBarGenerator;
-        private RelayCommand connectToGeneratorCommand;
-        private RelayCommand disconnectFromGeneratorCommand;
         private GeneratorState generatorState;
         private TimeSpan lastRenderingTime;
         #endregion
@@ -32,12 +30,19 @@ namespace LevelBarApp.ViewModels
         /// </summary>
         public MainWindowViewModel()
         {
-            levelBarGenerator = LevelBarGenerator.Instance;
-
+            var args = new LevelBarGeneratorArgs 
+            {
+                //NumberOfChannels = 50,
+                //Interval = TimeSpan.FromMilliseconds(15)
+            };
+            levelBarGenerator = new LevelBarGenerator(args);
             levelBarGenerator.GeneratorStateChanged += LevelBarGenerator_GeneratorStateChanged;
             levelBarGenerator.ChannelAdded += LevelBarGenerator_ChannelAdded;
             levelBarGenerator.ChannelLevelDataReceived += LevelBarGenerator_ChannelDataReceived;
             levelBarGenerator.ChannelRemoved += LevelBarGenerator_ChannelRemoved;
+
+            ConnectGeneratorCommand = new RelayCommand(new Action(levelBarGenerator.Connect));
+            DisconnectGeneratorCommand = new RelayCommand(new Action(levelBarGenerator.Disconnect));
 
             GeneratorState = GeneratorState.Stopped;
 
@@ -61,7 +66,7 @@ namespace LevelBarApp.ViewModels
         /// <value>
         /// The connect generator.
         /// </value>
-        public RelayCommand ConnectGeneratorCommand => connectToGeneratorCommand ?? (connectToGeneratorCommand = new RelayCommand(new System.Action(async () => await levelBarGenerator.Connect())));
+        public RelayCommand ConnectGeneratorCommand { get; }
 
         /// <summary>
         /// Gets the command to disconnect the generator
@@ -69,8 +74,11 @@ namespace LevelBarApp.ViewModels
         /// <value>
         /// The disconnect generator.
         /// </value>
-        public RelayCommand DisconnectGeneratorCommand => disconnectFromGeneratorCommand ?? (disconnectFromGeneratorCommand = new RelayCommand(new System.Action(async () => await levelBarGenerator.Disconnect())));
+        public RelayCommand DisconnectGeneratorCommand { get; }
 
+        /// <summary>
+        /// The State of the Generator
+        /// </summary>
         public GeneratorState GeneratorState
         {
             get => generatorState;
@@ -97,7 +105,6 @@ namespace LevelBarApp.ViewModels
         private void LevelBarGenerator_GeneratorStateChanged(object sender, GeneratorStateChangedEventArgs e)
         {
             GeneratorState = e.State;
-            RaisePropertyChanged(nameof(GeneratorState));
         }
 
         private void LevelBarGenerator_ChannelDataReceived(object sender, ChannelDataEventArgs e)
@@ -109,7 +116,7 @@ namespace LevelBarApp.ViewModels
                 var levelBar = LevelBars[id];
 
                 float level = e.Levels[i];
-                float transformedLevel = LevelBarGenerator.TransformValue(level);
+                float transformedLevel = levelBarGenerator.TransformLevelValue(level);
 
                 // Update Level
                 levelBar.Level = transformedLevel;
@@ -145,9 +152,9 @@ namespace LevelBarApp.ViewModels
                 {
                     // Reset MaxLevel by reducing it over time
                     float timeDelta = (float)(nextRenderingTime.TotalSeconds - lastRenderingTime.TotalSeconds);
-                    float penalty = timeDelta * levelBar.PeakholdResetSpeed;
-                    levelBar.MaxLevel -= penalty;
-                    levelBar.MaxLevel = Math.Min(1, Math.Max(0, levelBar.MaxLevel)); // ensure value is between 0 and 1
+                    float reduction = timeDelta * levelBar.PeakholdResetSpeed;
+                    levelBar.MaxLevel -= reduction;
+                    levelBar.MaxLevel = Math.Max(0, Math.Min(1, levelBar.MaxLevel)); // ensure value is between 0 and 1
                 }
             }
         }
