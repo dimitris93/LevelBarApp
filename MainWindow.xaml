@@ -50,7 +50,7 @@
 
         <!-- Panel containing LevelBars -->
         <Viewbox Grid.Row="1" Margin="5">
-            <ItemsControl  ItemsSource="{Binding LevelBars}" >
+            <ItemsControl ItemsSource="{Binding LevelBars}" >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" />
@@ -60,28 +60,26 @@
                 <!-- LevelBar -->
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <!-- Border & Background -->
-                            <Border x:Name="levelBarBorder" Margin="2" Width="10" Height="250" BorderThickness="1" BorderBrush="DarkGray" >
-                                <Grid>
-                                    <!-- ProgressBar -->
-                                    <ProgressBar Orientation="Vertical" Maximum="1.0" Background="LightGray"
-                                                 Value="{Binding Level}" 
-                                                 Foreground="{Binding Level, Converter={StaticResource LevelValueToColorConverter}}" />
+                        <!-- Border & Background -->
+                        <Border x:Name="levelBarBorder" Margin="2" Width="10" Height="250" BorderThickness="1" BorderBrush="DarkGray" >
+                            <Grid>
+                                <!-- ProgressBar -->
+                                <ProgressBar Orientation="Vertical" Maximum="1.0" Background="LightGray"
+                                                Value="{Binding Level}" 
+                                                Foreground="{Binding Level, Converter={StaticResource LevelValueToColorConverter}}" />
 
-                                    <!-- Peakhold -->
-                                    <Border BorderThickness="0,5,0,0" VerticalAlignment="Bottom" 
-                                            BorderBrush="{Binding MaxLevel, Converter={StaticResource LevelValueToColorConverter}}" >
-                                        <Border.Height>
-                                            <MultiBinding Converter="{StaticResource MaxLevelValueToPeakholdHeightConverter}">
-                                                <Binding Path="MaxLevel" />
-                                                <Binding ElementName="levelBarBorder" Path="ActualHeight" />
-                                            </MultiBinding>
-                                        </Border.Height>
-                                    </Border>
-                                </Grid>
-                            </Border>
-                        </Grid>
+                                <!-- Peakhold -->
+                                <Border BorderThickness="0,5,0,0" VerticalAlignment="Bottom" 
+                                        BorderBrush="{Binding MaxLevel, Converter={StaticResource LevelValueToColorConverter}}" >
+                                    <Border.Height>
+                                        <MultiBinding Converter="{StaticResource MaxLevelValueToPeakholdHeightConverter}">
+                                            <Binding Path="MaxLevel" />
+                                            <Binding ElementName="levelBarBorder" Path="ActualHeight" />
+                                        </MultiBinding>
+                                    </Border.Height>
+                                </Border>
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -137,9 +137,7 @@ namespace LevelBarApp.ViewModels
                 var nextRenderingTime = renderingEventArgs.RenderingTime;
 
                 ResetPeakholds(nextRenderingTime);
-
-                // Update lastRenderingTime
-                lastRenderingTime = renderingEventArgs.RenderingTime;
+                lastRenderingTime = nextRenderingTime;
             }
         }
 
@@ -154,6 +152,10 @@ namespace LevelBarApp.ViewModels
                     float timeDelta = (float)(nextRenderingTime.TotalSeconds - lastRenderingTime.TotalSeconds);
                     float reduction = timeDelta * levelBar.PeakholdResetSpeed;
                     levelBar.MaxLevel -= reduction;
+                    if (levelBar.MaxLevel < levelBar.Level)
+                    {
+                        levelBar.MaxLevel = levelBar.Level; // ensure that MaxLevel is always greater than Level
+                    }
                     levelBar.MaxLevel = Math.Max(0, Math.Min(1, levelBar.MaxLevel)); // ensure value is between 0 and 1
                 }
             }

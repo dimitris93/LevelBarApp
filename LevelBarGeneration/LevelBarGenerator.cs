@@ -34,14 +34,17 @@ namespace LevelBarGeneration
         /// Occurs when [channel added].
         /// </summary>
         public event EventHandler<ChannelChangedEventArgs> ChannelAdded;
+
         /// <summary>
         /// Occurs when [channel removed].
         /// </summary>
         public event EventHandler<ChannelChangedEventArgs> ChannelRemoved;
+
         /// <summary>
         /// Occurs when [channel data received].
         /// </summary>
         public event EventHandler<ChannelDataEventArgs> ChannelLevelDataReceived;
+
         /// <summary>
         /// Occurs when [state changed].
         /// </summary>
@@ -99,11 +102,11 @@ namespace LevelBarGeneration
         /// </summary>
         public float TransformLevelValue(double level)
         {
-            level = Math.Log10(level);
+            level = Math.Log10(level); // transform 
             var min = Math.Log10(minLevel);
             var max = Math.Log10(maxLevel);
 
-            level = (level - min) / (max - min); // transform 
+            level = (level - min) / (max - min); // normalize
             level = Math.Max(0, Math.Min(1, level)); // ensure value is between 0 and 1
             return (float)level;
         }

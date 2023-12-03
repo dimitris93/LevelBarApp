@@ -18,7 +18,7 @@ namespace LevelBarApp.Converters
                 values[0] is float maxLevel &&
                 values[1] is double leverBarHeight)
             {
-                return maxLevel * System.Convert.ToDouble(leverBarHeight);
+                return maxLevel * leverBarHeight;
             }
 
             return Binding.DoNothing;
