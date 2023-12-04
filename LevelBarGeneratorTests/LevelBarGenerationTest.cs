@@ -1,6 +1,7 @@
 #nullable disable
 
 using LevelBarGeneration;
+using System.Reflection.Emit;
 
 namespace LevelBarGeneratorTests
 {
@@ -8,7 +9,7 @@ namespace LevelBarGeneratorTests
     public class LevelBarGenerationTest
     {
         #region Constants
-        private readonly TimeSpan maxWaitingDuration = TimeSpan.FromSeconds(100);
+        private readonly TimeSpan maxWaitingDuration = TimeSpan.FromMilliseconds(100);
         private readonly TimeSpan interval = TimeSpan.FromMilliseconds(10);
         #endregion
 
